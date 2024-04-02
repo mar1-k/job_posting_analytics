@@ -1,0 +1,18 @@
+FROM continuumio/miniconda3:24.1.2-0
+
+EXPOSE 8501
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y curl
+
+RUN curl -sSL https://raw.githubusercontent.com/mar1-k/job_posting_analytics/main/dashboard/streamlit_testing.py > app.py
+
+# Write requirements.txt content to the container
+RUN echo 'streamlit\npandas\ngoogle-cloud-bigquery\nwordcloud\nmatplotlib\ndb-dtypes' > requirements.txt
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set the command to run the Streamlit app
+CMD ["streamlit", "run", "app.py", "--browser.gatherUsageStats", "false"]
