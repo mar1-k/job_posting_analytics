@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 # Get the database name from the environment variable set by Terraform
-database_name = os.getenv("DATABASE_NAME", "job-posting-analytics.job_posting_analytics_stg")
+database_name = os.getenv("DATABASE_NAME")
 
 # Initialize a BigQuery client
 client = bigquery.Client()
