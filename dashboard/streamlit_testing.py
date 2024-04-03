@@ -1,8 +1,13 @@
+import os
 import streamlit as st
 import pandas as pd
 from google.cloud import bigquery
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+
+
+# Get the database name from the environment variable set by Terraform
+database_name = os.getenv("DATABASE_NAME", "job-posting-analytics.job_posting_analytics_stg")
 
 # Initialize a BigQuery client
 client = bigquery.Client()
@@ -16,12 +21,12 @@ job_title_input = st.text_input("Enter a job title:", default_job_title)
 
 # Function to fetch skills data from BigQuery
 @st.cache_data
-def fetch_skills_data(job_title):
+def fetch_skills_data(job_title, database_name):
     query = f"""
     WITH split_skills AS (
-      SELECT job_title, SPLIT(job_skills, ',') AS skill
-      FROM `job-posting-analytics.job_posting_analytics_stg.linkedin_data`
-      WHERE job_title LIKE '%{job_title}%'
+        SELECT job_title, SPLIT(job_skills, ',') AS skill
+        FROM `{database_name}.linkedin_data`
+        WHERE job_title LIKE '%{job_title}%'
     )
     SELECT skill, COUNT(*) AS skill_count
     FROM split_skills
@@ -36,10 +41,10 @@ def fetch_skills_data(job_title):
 
 # Function to fetch company data from BigQuery
 @st.cache_data
-def fetch_companies_data(job_title):
+def fetch_companies_data(job_title, database_name):
     query = f"""
     SELECT company, COUNT(*) AS job_count
-    FROM `job-posting-analytics.job_posting_analytics_stg.linkedin_data`
+    FROM `{database_name}.linkedin_data`
     WHERE job_title LIKE '%{job_title}%'
     GROUP BY company
     ORDER BY job_count DESC
@@ -49,8 +54,8 @@ def fetch_companies_data(job_title):
     return results.to_dataframe()
 
 # Fetching and displaying data
-skills_df = fetch_skills_data(job_title_input)
-companies_df = fetch_companies_data(job_title_input)
+skills_df = fetch_skills_data(job_title_input, database_name)
+companies_df = fetch_companies_data(job_title_input, database_name)
 
 # Display header and results
 st.header(f"Showing results for: '{job_title_input}' related jobs based on data processed from scraped dataset from LinkedIn in January 2024 (https://www.kaggle.com/datasets/asaniczka/1-3m-linkedin-jobs-and-skills-2024/)")
@@ -89,7 +94,7 @@ if selected_company:
     # Query and display job details for the selected company
     query = f"""
     SELECT job_title, job_location, job_level, job_type, last_processed_day, job_skills
-    FROM `job-posting-analytics.job_posting_analytics_stg.linkedin_data`
+    FROM `{database_name}.linkedin_data`
     WHERE job_title LIKE '%{job_title_input}%' AND company = '{selected_company}'
     LIMIT 100
     """
