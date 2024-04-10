@@ -1,25 +1,25 @@
 #!/bin/bash
 
-echo "Downloading Anaconda setup script..."
-wget https://repo.anaconda.com/archive/Anaconda3-2024.02-1-Linux-x86_64.sh
+#echo "Downloading Anaconda setup script..."
+#wget https://repo.anaconda.com/archive/Anaconda3-2024.02-1-Linux-x86_64.sh
 
-echo "Running Anaconda setup script..."
-bash Anaconda3-2024.02-1-Linux-x86_64.sh -b -p ~/anaconda
+#echo "Running Anaconda setup script..."
+#bash Anaconda3-2024.02-1-Linux-x86_64.sh -b -p ~/anaconda
 
-echo "Removing Anaconda setup script..."
-rm Anaconda3-2024.02-1-Linux-x86_64.sh
+#echo "Removing Anaconda setup script..."
+#rm Anaconda3-2024.02-1-Linux-x86_64.sh
 
 #activate conda
-eval "$($HOME/anaconda/bin/conda shell.bash hook)"
+#eval "$($HOME/anaconda/bin/conda shell.bash hook)"
 
-echo "Running conda init..."
-conda init
+#echo "Running conda init..."
+#conda init
 
-echo "Running conda update..."
-conda update -y conda
+#echo "Running conda update..."
+#conda update -y conda
 
-echo "Installed conda version..."
-conda --version
+#echo "Installed conda version..."
+#conda --version
 
 echo "Running sudo apt-get update..."
 sudo apt-get update
