@@ -1,7 +1,7 @@
-version: '3'
+version: '3.7'
 
 networks:
-  airflow:
+  airflow: {}
 
 x-airflow-common: &airflow-common
   build:
@@ -12,8 +12,8 @@ x-airflow-common: &airflow-common
   volumes:
     - ./jobs:/opt/airflow/jobs
     - ./dags:/opt/airflow/dags
-    - ./data:/opt/airflow/data
     - ./logs:/opt/airflow/logs
+    - ./data:/opt/airflow/data
   depends_on:
     - postgres
   networks:
@@ -29,7 +29,7 @@ services:
       - POSTGRES_PASSWORD=airflow
       - POSTGRES_DB=airflow
     networks:
-      - cluster
+      - airflow
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 10s
@@ -39,24 +39,18 @@ services:
   webserver:
     <<: *airflow-common
     container_name: airflow-webserver
-    command: > #Initialize DB and Webserver
+    command: >
       bash -c "while ! pg_isready -h postgres -U airflow; do echo waiting for postgres; sleep 2; done;
       airflow db init || true;
       airflow webserver"
     ports:
       - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy  # Ensure Postgres is healthy before starting
 
   scheduler:
     <<: *airflow-common
     container_name: airflow-scheduler
-    command: > #Set up a default account for troubleshooting via web UI - NOTICE: If you are copy pasting this code please remove this from your production environment.
+    command: >
       bash -c "while ! pg_isready -h postgres -U airflow; do echo waiting for postgres; sleep 2; done;
       airflow db migrate &&
       airflow users create --username admin --firstname E --lastname Y --role Admin --email 123@123.com --password airflow &&
       airflow scheduler"
-    depends_on:
-      postgres:
-        condition: service_healthy  # Ensure Postgres is healthy before starting
