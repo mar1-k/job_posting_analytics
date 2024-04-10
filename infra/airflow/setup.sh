@@ -25,7 +25,7 @@ echo "Running sudo apt-get update..."
 sudo apt-get update
 
 echo "Installing Docker..."
-sudo apt-get -y install docker.io
+sudo apt-get -y install docker
 
 echo "Docker without sudo setup..."
 sudo groupadd docker
@@ -33,11 +33,7 @@ sudo gpasswd -a $USER docker
 sudo service docker restart
 
 echo "Installing docker-compose..."
-cd 
-mkdir -p bin
-cd bin
-wget https://github.com/docker/compose/releases/download/v2.26.1/docker-compose-linux-x86_64 -O docker-compose
-sudo chmod +x docker-compose
+sudo apt-get -y install docker-compose
 
 echo "docker-compose version: " 
 docker-compose --version
