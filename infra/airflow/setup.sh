@@ -43,11 +43,7 @@ echo "docker-compose version: "
 docker-compose --version
 
 echo "Building airflow docker images..."
-cd ~/streamify/airflow
 docker-compose build
-
-echo "Running airflow-init..."
-docker-compose up airflow-init
 
 echo "Starting up airflow in detached mode..."
 docker-compose up -d
