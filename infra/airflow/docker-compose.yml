@@ -1,7 +1,7 @@
-version: '3.7'
+version: '3'
 
 networks:
-  airflow: {}
+  cluster:
 
 x-airflow-common: &airflow-common
   build:
@@ -12,14 +12,12 @@ x-airflow-common: &airflow-common
   volumes:
     - ./jobs:/opt/airflow/jobs
     - ./dags:/opt/airflow/dags
-    - ./logs:/opt/airflow/logs
     - ./data:/opt/airflow/data
+    - ./logs:/opt/airflow/logs
   depends_on:
     - postgres
   networks:
-    - airflow
-
-services:
+    - cluster
 
   postgres:
     container_name: airflow-postgres
@@ -29,7 +27,7 @@ services:
       - POSTGRES_PASSWORD=airflow
       - POSTGRES_DB=airflow
     networks:
-      - airflow
+      - cluster
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 10s
@@ -39,12 +37,15 @@ services:
   webserver:
     <<: *airflow-common
     container_name: airflow-webserver
-    command: >
+    command: > #Initialize DB, and setup our spark connection
       bash -c "while ! pg_isready -h postgres -U airflow; do echo waiting for postgres; sleep 2; done;
       airflow db init || true;
       airflow webserver"
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ensure Postgres is healthy before starting
 
   scheduler:
     <<: *airflow-common
@@ -54,3 +55,6 @@ services:
       airflow db migrate &&
       airflow users create --username admin --firstname E --lastname Y --role Admin --email 123@123.com --password airflow &&
       airflow scheduler"
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ensure Postgres is healthy before starting
