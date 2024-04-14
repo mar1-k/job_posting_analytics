@@ -19,5 +19,5 @@ ENV PATH $PATH:$JAVA_HOME/bin
 
 USER airflow
 
-# Install Apache Airflow, Apache Spark provider, and PySpark
-RUN pip install apache-airflow apache-airflow-providers-apache-spark pyspark
+# Install pip requirements
+RUN pip install apache-airflow pyspark apache-airflow-providers-apache-spark apache-airflow-providers-google apache-airflow-providers-http
