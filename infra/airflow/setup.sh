@@ -2,13 +2,11 @@
 echo "Running sudo apt-get update..."
 sudo apt-get update
 
+echo "Granting Permissions to airflow folder..."
+sudo chmod -R 777 ./
+
 echo "Installing Docker..."
 sudo apt-get -y install docker
-
-echo "Docker without sudo setup..."
-sudo groupadd docker
-sudo gpasswd -a $USER docker
-sudo service docker restart
 
 echo "Installing docker-compose..."
 sudo apt-get -y install docker-compose
