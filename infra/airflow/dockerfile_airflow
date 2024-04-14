@@ -11,6 +11,10 @@ RUN apt-get update && \
 RUN apt-get install -y openjdk-17-jdk && \
     apt-get clean
 
+# Install unzip
+RUN apt-get install -y unzip && \
+    apt-get clean
+
 # Set JAVA_HOME environment variable
 #ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-arm64
 
