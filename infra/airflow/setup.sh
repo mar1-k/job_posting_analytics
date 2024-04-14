@@ -5,6 +5,9 @@ sudo apt-get update
 echo "Granting Permissions to airflow folder..."
 sudo chmod -R 777 ./
 
+echo "Installing unzip..."
+sudo apt-get -y install unzip
+
 echo "Installing Docker..."
 sudo apt-get -y install docker
 
