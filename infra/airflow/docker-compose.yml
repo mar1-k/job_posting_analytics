@@ -3,7 +3,22 @@ version: '3'
 networks:
   cluster:
 
-services:
+x-airflow-common: &airflow-common
+  build:
+    context: .
+    dockerfile: dockerfile_airflow
+  env_file:
+    - airflow.env
+  volumes:
+    - ./jobs:/opt/airflow/jobs
+    - ./dags:/opt/airflow/dags
+    - ./data:/opt/airflow/data
+    - ./logs:/opt/airflow/logs
+    - ./config:/opt/airflow/config
+  depends_on:
+    - postgres
+  networks:
+    - cluster
 
   postgres:
     container_name: airflow-postgres
@@ -21,39 +36,20 @@ services:
       retries: 5
 
   webserver:
-    build:
-      context: .
-      dockerfile: dockerfile_airflow
-    env_file:
-      - airflow.env
-    volumes:
-      - ./jobs:/opt/airflow/jobs
-      - ./dags:/opt/airflow/dags
-      - ./data:/opt/airflow/data
-      - ./logs:/opt/airflow/logs
-    container_name: airflow-webserver
-    command: >
+    <<: *airflow-common
+    container_name: airflow-webserverƒ
+    command: > #Initialize DB, and setup our spark connection
       bash -c "while ! pg_isready -h postgres -U airflow; do echo waiting for postgres; sleep 2; done;
       airflow db init || true;
       airflow webserver"
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
-    networks:
-      - cluster
+      postgres:
+        condition: service_healthy  # Ensure Postgres is healthy before starting
 
   scheduler:
-    build:
-      context: .
-      dockerfile: dockerfile_airflow
-    env_file:
-      - airflow.env
-    volumes:
-      - ./jobs:/opt/airflow/jobs
-      - ./dags:/opt/airflow/dags
-      - ./data:/opt/airflow/data
-      - ./logs:/opt/airflow/logs
+    <<: *airflow-common
     container_name: airflow-scheduler
     command: >
       bash -c "while ! pg_isready -h postgres -U airflow; do echo waiting for postgres; sleep 2; done;
@@ -61,6 +57,5 @@ services:
       airflow users create --username admin --firstname E --lastname Y --role Admin --email 123@123.com --password airflow &&
       airflow scheduler"
     depends_on:
-      - postgres
-    networks:
-      - cluster
+      postgres:
+        condition: service_healthy  # Ensure Postgres is healthy before starting
