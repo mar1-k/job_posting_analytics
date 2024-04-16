@@ -55,6 +55,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./data:/opt/airflow/data
       - ./logs:/opt/airflow/logs
+      - ./config:/opt/airflow/config
     container_name: airflow-scheduler
     command: >
       bash -c "while ! pg_isready -h postgres -U airflow; do echo waiting for postgres; sleep 2; done;
