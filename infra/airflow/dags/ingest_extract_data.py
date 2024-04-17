@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
+from airflow.operators.dagrun_operator import TriggerDagRunOperator
 import os
 
 # Define the default arguments for the DAG
@@ -38,11 +39,17 @@ with DAG(
 
     # Define the LocalFilesystemToGCSOperator to upload the CSVs to the datalake
     upload_task = LocalFilesystemToGCSOperator(
-        task_id="upload_job_to_gcs",
+        task_id='upload_job_to_gcs',
         bucket=os.environ.get("BUCKET_NAME"),
         src="/opt/airflow/data/*.csv",  # Upload all CSV files in the directory
         dst="data/"  # Destination directory in GCS
     )
 
+    # Define the TriggerDagRunOperator to trigger the transform DAG
+    trigger_transform_dag_task = TriggerDagRunOperator(
+        task_id = 'trigger_transform_dag_task',
+        trigger_dag_id = 'transform_data_with_spark'
+    )
+
     # Set the task dependencies
-    download_task >> unzip_task >> upload_task
+    download_task >> unzip_task >> upload_task >> trigger_transform_dag_task
