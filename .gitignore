@@ -162,3 +162,4 @@ infra/.DS_Store
 .DS_Store
 .DS_Store
 infra/airflow/.DS_Store
+infra/airflow/jobs/.DS_Store

@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
+from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
+import os
 
 # Define the default arguments for the DAG
 default_args = {
@@ -14,13 +16,13 @@ default_args = {
 
 # Define the DAG
 with DAG(
-    'download_extract_zip',
+    'ingest_to_datalake',
     default_args=default_args,
-    description='A DAG to download a file from a URL and unzip it',
+    description='A DAG to upload CSV files from a local directory to GCS',
     schedule_interval='@once',  # Run once as soon as possible
     start_date=datetime.now(),
     is_paused_upon_creation=False,
-    tags=['data_engineering', 'ingestion'],
+    tags=['data_engineering', 'ingestion', 'data_lake'],
 ) as dag:
     # Define the BashOperator to execute curl command to download the file
     download_task = BashOperator(
@@ -34,5 +36,13 @@ with DAG(
         bash_command='unzip -o /opt/airflow/data/2024_linkedin_scraped_data.zip -d /opt/airflow/data/'
     )
 
+    # Define the LocalFilesystemToGCSOperator to upload the CSVs to the datalake
+    upload_task = LocalFilesystemToGCSOperator(
+        task_id="upload_job_to_gcs",
+        bucket=os.environ.get("BUCKET_NAME"),
+        src="/opt/airflow/data/*.csv",  # Upload all CSV files in the directory
+        dst="data/"  # Destination directory in GCS
+    )
+
     # Set the task dependencies
-    download_task >> unzip_task
+    download_task >> unzip_task >> upload_task
