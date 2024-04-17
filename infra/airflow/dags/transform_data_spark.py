@@ -1,16 +1,15 @@
 from datetime import timedelta, datetime
 from airflow import DAG
-from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator, DataprocDeleteClusterOperator
+from airflow.operators.dagrun_operator import TriggerDagRunOperator
 import os
 
 GOOGLE_CONN_ID = "google_cloud_default"
 PROJECT_ID = os.environ.get("PROJECT_ID")
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
 CLUSTER_NAME = os.environ.get("CLUSTER_NAME")
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET")
 REGION = os.environ.get("REGION")
 PYSPARK_JOB_PATH = '/opt/airflow/jobs/pyspark/transform_data.py'
 GCS_JOB_PATH = 'pyspark_jobs/transform_data.py'
@@ -75,7 +74,7 @@ with DAG(
     schedule_interval=None, 
     start_date=datetime.now(),
     is_paused_upon_creation=False,
-    tags=['data_engineering', 'transformation', 'PySpark'],
+    tags=['data_engineering', 'transform', 'PySpark'],
 ) as dag:
         
     # Task to create the job file
@@ -113,6 +112,13 @@ with DAG(
         region = REGION,
         cluster_name = CLUSTER_NAME
     )
+    
+    # Define the TriggerDagRunOperator to trigger the load DAG
+    trigger_bq_load_dag_task = TriggerDagRunOperator(
+        task_id = 'trigger_bq_load_dag_task',
+        trigger_dag_id = 'load_data_to_bigquery'
+    )
+
 
     # Define task dependencies
-    create_job_file_task >> upload_job_to_gcs_task >> submit_pyspark_task >> delete_dataproc_cluster_task
+    create_job_file_task >> upload_job_to_gcs_task >> submit_pyspark_task >> delete_dataproc_cluster_task >> trigger_bq_load_dag_task
