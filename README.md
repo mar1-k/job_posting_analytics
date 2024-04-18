@@ -54,4 +54,4 @@ Since the 2024 cohort of the Zoomcamp primarily utilized Mage for orchestration 
 - https://github.com/ankurchavda/streamify
 - https://github.com/airscholar/SparkingFlow
 
-I would also of like to thank [Asaniczka](https://www.kaggle.com/asaniczka) of course for the Dataset that made this project possible.
+I would also like to thank [Asaniczka](https://www.kaggle.com/asaniczka) of course for the Dataset that made this project possible.
