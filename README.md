@@ -32,7 +32,7 @@ The dataset is comprised of 3 csvs containing 1.3 million rows of scraped job da
 - Language - [**Python**](https://www.python.org)
 
 ### Architecture
-![project_architecture drawio](https://github.com/mar1-k/job_posting_analytics/assets/14811869/2c1528b3-c540-4d37-8da3-9bda61fbf261)
+![image](https://github.com/mar1-k/job_posting_analytics/assets/14811869/48bfa625-95a7-4d89-8aed-4ef23114fe1f)
 
 ### Final Result
 
