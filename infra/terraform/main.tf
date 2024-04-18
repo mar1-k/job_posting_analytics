@@ -181,12 +181,12 @@ resource "google_project_iam_binding" "dataproc_compute_service_account_roles" {
 }
 
 #Need a time sleep for permissions to apply to the compute service account for dataproc provisioning 
-resource "time_sleep" "wait_60_seconds" {
-  create_duration = "60s"
+resource "time_sleep" "wait_90_seconds" {
+  create_duration = "90s"
 }
 
 resource "google_dataproc_cluster" "mulitnode_spark_cluster" {
-  depends_on = [time_sleep.wait_60_seconds, google_project_iam_binding.dataproc_compute_service_account_roles, google_compute_firewall.internal_allow_192_168]
+  depends_on = [time_sleep.wait_90_seconds, google_project_iam_binding.dataproc_compute_service_account_roles, google_compute_firewall.internal_allow_192_168]
   name   = "job-posting-analytics-multinode-spark-cluster"
   region = var.region
 
