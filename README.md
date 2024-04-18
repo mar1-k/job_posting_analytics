@@ -44,7 +44,7 @@ A live version of the dashboard app can be accessed at: https://streamlit-dashbo
 
 ### Getting started with running your own version of this project:
 
-See deployment.md
+See [deploy.md](https://github.com/mar1-k/job_posting_analytics/blob/main/infra/deploy.md)
 
 ### Mentions and Credits
 
