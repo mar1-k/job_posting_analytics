@@ -23,7 +23,7 @@ with DAG(
     schedule_interval='@once',  # Run once as soon as possible
     start_date=datetime.now(),
     is_paused_upon_creation=False,
-    tags=['data_engineering', 'ingestion', 'data_lake'],
+    tags=['data_engineering', 'ingestion', 'data_lake', 'extract'],
 ) as dag:
     # Define the BashOperator to execute curl command to download the file
     download_task = BashOperator(
