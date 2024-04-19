@@ -6,7 +6,7 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y curl
 
-RUN curl -sSL https://raw.githubusercontent.com/mar1-k/job_posting_analytics/main/dashboard/streamlit_testing.py > app.py
+RUN curl -sSL https://raw.githubusercontent.com/mar1-k/job_posting_analytics/main/streamlit_dashboard/dashboard.py > app.py
 
 # Write requirements.txt content to the container
 RUN echo 'streamlit\npandas\ngoogle-cloud-bigquery\nwordcloud\nmatplotlib\ndb-dtypes' > requirements.txt
