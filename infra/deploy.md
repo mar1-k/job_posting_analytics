@@ -60,7 +60,7 @@ Terraform will need the following GCP APIs enabled for this project, please enab
 
 ### Step 7: Wait for the Data Pipeline to Finish Running
 
-Once Terraform has finished deploying everything to GCP, it will take about another 15-20 minutes for the Airflow VM to set itself up and go through the whole pipeline. At this point, you are welcome to setup SSH to the Airflow VM instance, tunnel port 8080 and watch the DAGs run. Alternatively, just can just monitor the DataProc jobs for the creation of the main PySpark job. 
+Once Terraform has finished deploying everything to GCP, it will take about another 15-20 minutes for the Airflow VM to set itself up and go through the whole pipeline. At this point, you are welcome to setup SSH to the Airflow VM instance, tunnel port 8080 and watch the DAGs run. Alternatively, you can just monitor the DataProc jobs for the creation of the main PySpark job. 
 
 - Note that the streamlit dashboard app will be accessible. However, you will get errors due to the data not existing in BigQuery just yet
 - To SSH to the Airflow VM, use the IP provided from the `airflow_vm_ip` Terraform output and the method shown in https://www.youtube.com/watch?v=ae-CV2KfoN0&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb
