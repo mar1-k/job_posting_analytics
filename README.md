@@ -36,11 +36,7 @@ The dataset is comprised of 3 csvs containing 1.3 million rows of scraped job da
 
 ### Final Result
 
-A live version of the dashboard app can be accessed at: https://streamlit-dashboard-ucsfwi2asq-uc.a.run.app/
-
-![dashboard](https://github.com/mar1-k/job_posting_analytics/assets/14811869/b346893f-caa0-460b-ab7c-f63c2e7fb956)
-![dashboard2](https://github.com/mar1-k/job_posting_analytics/assets/14811869/8eca8846-8f38-4501-9ec1-0373194e50a0)
-
+A live version of the dashboard app can be accessed at: [https://streamlit-dashboard-ucsfwi2asq-uc.a.run.app/](https://streamlit-dashboard-ucsfwi2asq-uc.a.run.app)
 
 ### Getting started with running your own version of this project:
 
